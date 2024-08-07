@@ -1,0 +1,30 @@
+name: Run BlazeMeter Test
+on: 
+  push:
+    branches:
+      - main  # Adjust this to the branch you want to trigger the workflow on
+
+jobs:
+  runBlazeMeterTest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3  # Updated to the latest version of the checkout action
+
+    - name: Set up curl
+      run: sudo apt-get install -y curl
+
+    - name: Run BlazeMeter Test
+      env:
+        BLAZEMETER_API_KEY: ${{ secrets.BLAZEMETER_API_KEY }}
+      run: |
+        curl -X POST "https://a.blazemeter.com/api/latest/ci" \
+        -H "x-api-key: $BLAZEMETER_API_KEY" \
+        -d '{
+              "configuration": {
+                "testFile": "path/to/your-test-file.jmx",
+                "name": "My JMeter Test",
+                "description": "A description of the test"
+              }
+            }'
